@@ -81,17 +81,22 @@ void stopMotor(){
     /*
         Write Task 3 code here
     */
-   uint8_t low;
-   uint8_t high;
-   breakup(280, &low, &high);
-   bufWrite[0] = low;
-   bufWrite[1] = high;
-   metal_i2c_write(i2c, PCA9685_I2C_ADDRESS + 0x08, 2, bufWrite, 1);
+    uint8_t low;
+    uint8_t high;
+    uint8_t code;
+    breakup(280, &low, &high);
+    bufWrite[0] = PCA9685_LED0_ON_L + 0x02;
+    bufWrite[1] = low;
+    bufWrite[2] = high;
+    printf("StopMotor %d %d\n", high, low);
+    code = metal_i2c_transfer(i2c,PCA9685_I2C_ADDRESS,bufWrite,3,bufRead,1);
+    printf("Stopmotor transfer code %d\n", code);
 }
 
 void driveForward(uint8_t speedFlag){
     uint8_t low;
     uint8_t high;
+    uint8_t code;
     switch (speedFlag) {
         case 1:
             breakup(313, &low, &high);
@@ -106,9 +111,12 @@ void driveForward(uint8_t speedFlag){
             // If invalid, just stop the motor
             breakup(280, &low, &high);
     }
-    bufWrite[0] = low;
-    bufWrite[1] = high;
-    metal_i2c_write(i2c, PCA9685_I2C_ADDRESS + 0x08, 2, bufWrite, 1);
+    bufWrite[0] = PCA9685_LED0_ON_L + 0x02;
+    bufWrite[1] = low;
+    bufWrite[2] = high;
+    printf("ForwardMotor %d %d\n", high, low);
+    code = metal_i2c_transfer(i2c,PCA9685_I2C_ADDRESS,bufWrite,3,bufRead,1);
+    printf("ForwardMotor transfer code %d\n", code);
 }
 
 void driveReverse(uint8_t speedFlag){
@@ -180,9 +188,9 @@ int main()
 
         ex: stopMotor();
     */
-    delay(2000);
+    delay(4000);
     driveForward(1);
-    delay(2000);
+    delay(4000);
     stopMotor();
 
 
