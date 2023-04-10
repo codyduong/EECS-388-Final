@@ -81,12 +81,34 @@ void stopMotor(){
     /*
         Write Task 3 code here
     */
+   uint8_t low;
+   uint8_t high;
+   breakup(280, &low, &high);
+   bufWrite[0] = low;
+   bufWrite[1] = high;
+   metal_i2c_write(i2c, PCA9685_I2C_ADDRESS + 0x08, 2, bufWrite, 1);
 }
 
 void driveForward(uint8_t speedFlag){
-    /*
-        Write Task 4 code here
-    */
+    uint8_t low;
+    uint8_t high;
+    switch (speedFlag) {
+        case 1:
+            breakup(313, &low, &high);
+            break;
+        case 2:
+            breakup(315, &low, &high);
+            break;
+        case 3:
+            breakup(317, &low, &high);
+            break;    
+        default:
+            // If invalid, just stop the motor
+            breakup(280, &low, &high);
+    }
+    bufWrite[0] = low;
+    bufWrite[1] = high;
+    metal_i2c_write(i2c, PCA9685_I2C_ADDRESS + 0x08, 2, bufWrite, 1);
 }
 
 void driveReverse(uint8_t speedFlag){
@@ -158,6 +180,10 @@ int main()
 
         ex: stopMotor();
     */
+    delay(2000);
+    driveForward(1);
+    delay(2000);
+    stopMotor();
 
 
     /*
