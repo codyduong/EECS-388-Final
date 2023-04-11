@@ -78,43 +78,36 @@ void steering(int angle){
 }
 
 void stopMotor(){
-    /*
-        Write Task 3 code here
-    */
-    uint8_t low;
-    uint8_t high;
+    uint8_t lowOffset = 1;
+    uint8_t highOffset = 2;
     uint8_t code;
-    breakup(280, &low, &high);
-    bufWrite[0] = PCA9685_LED0_ON_L + 0x02;
-    bufWrite[1] = low;
-    bufWrite[2] = high;
-    printf("StopMotor %d %d\n", high, low);
+    bufWrite[0] = PCA9685_LED0_ON_L + 0x06;
+    breakup(280, &bufWrite[lowOffset], &bufWrite[highOffset]);
+    printf("StopMotor %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
     code = metal_i2c_transfer(i2c,PCA9685_I2C_ADDRESS,bufWrite,3,bufRead,1);
     printf("Stopmotor transfer code %d\n", code);
 }
 
 void driveForward(uint8_t speedFlag){
-    uint8_t low;
-    uint8_t high;
+    uint8_t lowOffset = 1;
+    uint8_t highOffset = 2;
     uint8_t code;
+    bufWrite[0] = PCA9685_LED0_ON_L + 0x06;
     switch (speedFlag) {
         case 1:
-            breakup(313, &low, &high);
+            breakup(313, &bufWrite[lowOffset], &bufWrite[highOffset]);
             break;
         case 2:
-            breakup(315, &low, &high);
+            breakup(315, &bufWrite[lowOffset], &bufWrite[highOffset]);
             break;
         case 3:
-            breakup(317, &low, &high);
+            breakup(317, &bufWrite[lowOffset], &bufWrite[highOffset]);
             break;    
         default:
             // If invalid, just stop the motor
-            breakup(280, &low, &high);
+            breakup(280, &bufWrite[lowOffset], &bufWrite[highOffset]);
     }
-    bufWrite[0] = PCA9685_LED0_ON_L + 0x02;
-    bufWrite[1] = low;
-    bufWrite[2] = high;
-    printf("ForwardMotor %d %d\n", high, low);
+    printf("ForwardMotor %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
     code = metal_i2c_transfer(i2c,PCA9685_I2C_ADDRESS,bufWrite,3,bufRead,1);
     printf("ForwardMotor transfer code %d\n", code);
 }
@@ -188,10 +181,6 @@ int main()
 
         ex: stopMotor();
     */
-    delay(4000);
-    driveForward(1);
-    delay(4000);
-    stopMotor();
 
 
     /*
