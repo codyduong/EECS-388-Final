@@ -70,16 +70,12 @@ void breakup(int bigNum, uint8_t* low, uint8_t* high){
 }
 
 void steering(int angle){
-    uint8_t low;
-    uint8_t high;
+    uint8_t lowOffset = 1;
+    uint8_t highOffset = 2;
     int angleCycle = getServoCycle(angle);
-    breakup(angleCycle, &low, &high);
-    bufWrite[0] = PCA9685_LED0_ON_L + 0x04;
-    bufWrite[1] = 0;
-    bufWrite[2] = 0;
-    bufWrite[3] = low;
-    bufWrite[4] = high;
-    metal_i2c_transfer(i2c,PCA9685_I2C_ADDRESS,bufWrite,4,bufRead,1);
+    bufWrite[0] = PCA9685_LED0_ON_L + 0x02;
+    breakup(angleCycle, &bufWrite[lowOffset], &bufWrite[highOffset]);
+    metal_i2c_transfer(i2c,PCA9685_I2C_ADDRESS,bufWrite,2,bufRead,1);
 }
 
 void stopMotor(){
