@@ -71,10 +71,13 @@ void breakup(int bigNum, uint8_t* low, uint8_t* high){
 void steering(int angle){
     uint8_t lowOffset = 1;
     uint8_t highOffset = 2;
+    uint8_t code;
     int angleCycle = getServoCycle(angle);
     bufWrite[0] = PCA9685_LED0_ON_L + 0x02;
+    printf("Steering %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
     breakup(angleCycle, &bufWrite[lowOffset], &bufWrite[highOffset]);
-    metal_i2c_transfer(i2c,PCA9685_I2C_ADDRESS,bufWrite,2,bufRead,1);
+    code = metal_i2c_transfer(i2c,PCA9685_I2C_ADDRESS,bufWrite,2,bufRead,1);
+    printf("Steering transfer code %d\n", code);
 }
 
 void stopMotor(){
@@ -84,7 +87,7 @@ void stopMotor(){
     bufWrite[0] = PCA9685_LED0_ON_L + 0x06;
     breakup(280, &bufWrite[lowOffset], &bufWrite[highOffset]);
     printf("StopMotor %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
-    code = metal_i2c_transfer(i2c,PCA9685_I2C_ADDRESS,bufWrite,3,bufRead,1);
+    code = metal_i2c_transfer(i2c,PCA9685_I2C_ADDRESS,bufWrite,2,bufRead,1);
     printf("Stopmotor transfer code %d\n", code);
 }
 
@@ -108,7 +111,7 @@ void driveForward(uint8_t speedFlag){
             breakup(280, &bufWrite[lowOffset], &bufWrite[highOffset]);
     }
     printf("ForwardMotor %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
-    code = metal_i2c_transfer(i2c,PCA9685_I2C_ADDRESS,bufWrite,3,bufRead,1);
+    code = metal_i2c_transfer(i2c,PCA9685_I2C_ADDRESS,bufWrite,2,bufRead,1);
     printf("ForwardMotor transfer code %d\n", code);
 }
 
