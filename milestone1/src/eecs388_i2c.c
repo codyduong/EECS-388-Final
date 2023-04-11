@@ -228,4 +228,33 @@ int main()
         -Stop the motor
     */
 
+    // Configure the motors (wait for 2 seconds)
+    stopMotor();
+    delay(2000);
+
+    // Set the steering heading to 0 degrees
+    steering(0);
+
+    // Drive forward (wait for 2 seconds)
+    driveForward(1);
+    delay(2000);
+
+    // Change the steering heading to 20 degrees (wait for 2 seconds)
+    steering(20);
+    delay(2000);
+
+    // Stop the motor (wait for 2 seconds)
+    stopMotor(1);
+    delay(2000);
+
+    // Drive forward (wait for 2 seconds)
+    driveForward(1);
+    delay(2000);
+
+    // Set steering heading to 0 degrees (wait for 2 seconds)
+    steering(0);
+    delay(2000);
+
+    // Stop the motor
+    stopMotor(1);
 }
