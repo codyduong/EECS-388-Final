@@ -119,7 +119,11 @@ int main()
         variable2 -> high 8 bits of 2000
 
 
-    */    
+    */   
+    uint8_t variable1;
+    uint8_t variable2;
+    breakup(2000,&variable1,&variable2);
+    printf("Task 1 variable1: %d variable2: %d\n", variable1, variable2);
     
     //Changing Steering Heading
     /*
@@ -142,8 +146,11 @@ int main()
 
         ex: steering(0); -> driving angle forward
     */
+    printf("Task 2");
+    steering(0);
+    delay(1000);
     
-    
+
     //Motor config/stop. This will cause a second beep upon completion
     /*
         -Task 3: using bufWrite, bufRead, breakup(), and
@@ -161,6 +168,9 @@ int main()
 
         ex: stopMotor();
     */
+    printf("Task 3");
+    stopMotor();
+    delay(2000);
 
 
     /*
@@ -198,6 +208,14 @@ int main()
 
         ex: driveForward(1);
     */
+    printf("Task 4")
+    driveForward(1);
+    delay(1000);
+    driveForward(2);
+    delay(1000);
+    driveForward(3);
+    delay(1000);
+    stopMotor();
     
     //Motor Reverse
     /*
@@ -217,7 +235,15 @@ int main()
 
         ex: driveReverse(1);
     */
-    
+
+    printf("Task 5");
+    driveReverse(1);
+    delay(1000);
+    driveReverse(2);
+    delay(1000);
+    driveReverse(3);
+    delay(1000);
+    stopMotor();
     
     //Fully Controlling the PCA9685
     /*
@@ -233,6 +259,8 @@ int main()
         -Set steering heading to 0 degrees (wait for 2 seconds)
         -Stop the motor
     */
+
+    printf("Task 6");
 
     // Configure the motors (wait for 2 seconds)
     stopMotor();
