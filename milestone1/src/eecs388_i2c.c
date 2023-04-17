@@ -151,7 +151,7 @@ void driveReverse(uint8_t speedFlag){
     code = metal_i2c_transfer(i2c,PCA9685_I2C_ADDRESS,bufWrite,2,bufRead,1);
     // Print the transfer code
       printf("ReverseMotor transfer code %d\n", code);
-   }
+}
 
 
 
