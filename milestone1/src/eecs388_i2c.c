@@ -81,68 +81,78 @@ void stopMotor(){
     */
 }
 
-void driveForward(uint8_t speedFlag) {
-    // Declare variables to store the low and high bytes of the speed value
-    uint8_t lowByte, highByte;
-
-    // Calculate the speed of the motor based on the input speedFlag value (0-255)
-    // and scale it to a 12-bit value (0-4095)
-    int speed = speedFlag * 4096 / 255;
-
-    // Call the breakup function to split the 12-bit speed value into low and high bytes
-    breakup(speed, &lowByte, &highByte);
-
-    // Set the register address for the LED0_ON_L register (motor direction)
-    bufWrite[0] = LED0_ON_L;
-
-    // Set the low byte of the ON value for the motor to 0x00 (no effect)
-    bufWrite[1] = 0x00;
-
-    // Set the high byte of the ON value for the motor to 0x00 (no effect)
-    bufWrite[2] = 0x00;
-
-    // Set the low byte of the OFF value for the motor to drive in forward direction
-    bufWrite[3] = lowByte;
-
-    // Set the high byte of the OFF value for the motor to drive in forward direction
-    bufWrite[4] = highByte;
-
-    // Write the 5-byte bufWrite array to the I2C device (PCA9685)
-    // to set the motor direction and speed
-    metal_i2c_write(i2c, PCA9685_I2C_ADDRESS, 5, bufWrite, METAL_I2C_STOP_DISABLE);
+// Define the driveForward function with a speedFlag input
+void driveForward(uint8_t speedFlag){
+    // Set the low and high offsets
+    uint8_t lowOffset = 1;
+    uint8_t highOffset = 2;
+    // Declare the code variable
+    uint8_t code;
+    // Set the register address for LED0_ON_L plus an offset of 6
+    bufWrite[0] = PCA9685_LED0_ON_L + 0x06;
+    // Switch case based on the speedFlag value
+    switch (speedFlag) {
+        case 1:
+            // Set the low and high values for speedFlag 1
+            breakup(313, &bufWrite[lowOffset], &bufWrite[highOffset]);
+            break;
+        case 2:
+            // Set the low and high values for speedFlag 2
+            breakup(315, &bufWrite[lowOffset], &bufWrite[highOffset]);
+            break;
+        case 3:
+            // Set the low and high values for speedFlag 3
+            breakup(317, &bufWrite[lowOffset], &bufWrite[highOffset]);
+            break;    
+        default:
+            // If invalid speedFlag, stop the motor
+            breakup(280, &bufWrite[lowOffset], &bufWrite[highOffset]);
+    }
+    // Print the high and low values
+    printf("ForwardMotor %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
+    // Perform an I2C transfer with the PCA9685 device
+    code = metal_i2c_transfer(i2c,PCA9685_I2C_ADDRESS,bufWrite,2,bufRead,1);
+    // Print the transfer code
+    printf("ForwardMotor transfer code %d\n", code);
 }
 
+// driveReverse function:
 
-void driveReverse(uint8_t speedFlag) {
-    // Declare variables to store the low and high bytes of the speed value
-    uint8_t lowByte, highByte;
+// Define the driveReverse function with a speedFlag input
+void driveReverse(uint8_t speedFlag){
+    // Set the low and high offsets
+    uint8_t lowOffset = 1;
+    uint8_t highOffset = 2;
+    // Declare the code variable
+    uint8_t code;
+    // Set the register address for LED0_ON_L plus an offset of 6
+    bufWrite[0] = PCA9685_LED0_ON_L + 0x06;
+    // Switch case based on the speedFlag value
+    switch (speedFlag) {
+        case 1:
+            // Set the low and high values for speedFlag 1
+            breakup(267, &bufWrite[lowOffset], &bufWrite[highOffset]);
+            break;
+        case 2:
+            // Set the low and high values for speedFlag 2
+            breakup(265, &bufWrite[lowOffset], &bufWrite[highOffset]);
+            break;
+        case 3:
+            // Set the low and high values for speedFlag 3
+            breakup(263, &bufWrite[lowOffset], &bufWrite[highOffset]);
+            break;    
+        default:
+            // If invalid speedFlag, stop the motor
+            breakup(280, &bufWrite[lowOffset], &bufWrite[highOffset]);
+    }
+    // Print the high and low values
+    printf("ReverseMotor %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
+    // Perform an I2C transfer with the PCA9685 device
+    code = metal_i2c_transfer(i2c,PCA9685_I2C_ADDRESS,bufWrite,2,bufRead,1);
+    // Print the transfer code
+      printf("ReverseMotor transfer code %d\n", code);
+   }
 
-    // Calculate the speed of the motor based on the input speedFlag value (0-255)
-    // and scale it to a 12-bit value (0-4095)
-    int speed = speedFlag * 4096 / 255;
-
-    // Call the breakup function to split the 12-bit speed value into low and high bytes
-    breakup(speed, &lowByte, &highByte);
-
-    // Set the register address for the LED0_ON_L register (motor direction)
-    bufWrite[0] = LED0_ON_L;
-
-    // Set the low byte of the ON value for the motor to drive in reverse direction
-    bufWrite[1] = lowByte;
-
-    // Set the high byte of the ON value for the motor to drive in reverse direction
-    bufWrite[2] = highByte;
-
-    // Set the low byte of the OFF value for the motor to 0x00 (no effect)
-    bufWrite[3] = 0x00;
-
-    // Set the high byte of the OFF value for the motor to 0x00 (no effect)
-    bufWrite[4] = 0x00;
-
-    // Write the 5-byte bufWrite array to the I2C device (PCA9685)
-    // to set the motor direction and speed
-    metal_i2c_write(i2c, PCA9685_I2C_ADDRESS, 5, bufWrite, METAL_I2C_STOP_DISABLE);
-}
 
 
 int main()
