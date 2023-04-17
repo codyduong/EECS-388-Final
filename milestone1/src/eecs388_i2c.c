@@ -63,23 +63,56 @@ void set_up_I2C(){
 } 
 
 
+
 void breakup(int bigNum, uint8_t* low, uint8_t* high){
-    /*
-        Write Task 1 code here
-    */
+    *low = (uint8_t)bigNum;
+    *high = (uint8_t)(bigNum >> 8);
 }
 
+/ Define the steering function with an angle input
 void steering(int angle){
-    /*
-        Write Task 2 code here
-    */
+// Set the low and high offsets
+	uint8_t lowOffset = 1;
+	uint8_t highOffset = 2;
+// Declare the code variable
+	uint8_t code;
+// Calculate angleCycle based on the provided angle
+	int angleCycle = getServoCycle(angle);
+// Set the register address for LED0_ON_L plus an offset of 2
+	bufWrite[0] = PCA9685_LED0_ON_L + 0x02;
+// Print the initial high and low values
+	printf("Steering %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
+// Break up angleCycle into low and high bytes
+	breakup(angleCycle, &bufWrite[lowOffset], &bufWrite[highOffset]);
+// Perform an I2C transfer with the PCA9685 device
+	code = metal_i2c_transfer(i2c,PCA9685_I2C_ADDRESS,bufWrite,2,bufRead,1);
+// Print the transfer code
+	printf("Steering transfer code %d\n", code);
 }
 
+// Define the stopMotor function
 void stopMotor(){
-    /*
-        Write Task 3 code here
-    */
+// Set the low and high offsets
+	uint8_t lowOffset = 1;
+	uint8_t highOffset = 2;
+// Declare the code variable
+	uint8_t code;
+// Set the register address for LED0_ON_L plus an offset of 6
+	bufWrite[0] = PCA9685_LED0_ON_L + 0x06;
+// Break up the constant value 280 into low and high bytes
+	breakup(280, &bufWrite[lowOffset], &bufWrite[highOffset]);
+// Print the high and low values
+	printf("StopMotor %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
+// Perform an I2C transfer with the PCA9685 device
+	code = metal_i2c_transfer(i2c,PCA9685_I2C_ADDRESS,bufWrite,2,bufRead,1);
+// Print the transfer code
+	printf("Stopmotor transfer code %d\n", code);
 }
+
+
+
+
+
 
 // Define the driveForward function with a speedFlag input
 void driveForward(uint8_t speedFlag){
@@ -117,7 +150,18 @@ void driveForward(uint8_t speedFlag){
 }
 
 // driveReverse function:
-
+/*
+1. uint8_t lowOffset = 1; and uint8_t highOffset = 2;: These lines set the low and high byte offsets for the PWM values.
+2. uint8_t code;: This line declares a variable named code that will store the result of the I2C transfer operation.
+3. bufWrite[0] = PCA9685_LED0_ON_L + 0x06;: This line sets the address of the PWM register where the ON values should be written.
+4. The switch (speedFlag) block maps the input speedFlag to appropriate low and high PWM values for reverse operation. 
+	These values are determined by the breakup() function, which breaks down a given value into two bytes (low byte and high byte). 
+	The values 267, 265, and 263 correspond to different reverse speeds. If an invalid speedFlag is provided, 
+	the motor is stopped by setting the PWM values to 280.
+5. The metal_i2c_transfer() function is called to perform an I2C transfer with the PCA9685 I2C address, 
+	the buffer containing the PWM values (bufWrite), and the buffer to read the returned data (bufRead). 
+	The result of the transfer is stored in the code variable.
+*/
 // Define the driveReverse function with a speedFlag input
 void driveReverse(uint8_t speedFlag){
     // Set the low and high offsets
