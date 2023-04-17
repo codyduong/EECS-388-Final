@@ -116,9 +116,27 @@ void driveForward(uint8_t speedFlag){
 }
 
 void driveReverse(uint8_t speedFlag){
-    /*
-        Ill get this one uploaded by Wednesday night...
-    */
+    uint8_t lowOffset = 1;
+    uint8_t highOffset = 2;
+    uint8_t code;
+    bufWrite[0] = PCA9685_LED0_ON_L + 0x06;
+    switch (speedFlag) {
+        case 1:
+            breakup(267, &bufWrite[lowOffset], &bufWrite[highOffset]);
+            break;
+        case 2:
+            breakup(265, &bufWrite[lowOffset], &bufWrite[highOffset]);
+            break;
+        case 3:
+            breakup(263, &bufWrite[lowOffset], &bufWrite[highOffset]);
+            break;    
+        default:
+            // If invalid, just stop the motor
+            breakup(280, &bufWrite[lowOffset], &bufWrite[highOffset]);
+    }
+    printf("ReverseMotor %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
+    code = metal_i2c_transfer(i2c,PCA9685_I2C_ADDRESS,bufWrite,2,bufRead,1);
+    printf("ReverseMotor transfer code %d\n", code);
 }
 
 int main()
