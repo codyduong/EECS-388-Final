@@ -81,9 +81,14 @@ void steering(int angle){
 }
 
 void stopMotor(){
-    /*
-        Write Task 3 code here
-    */
+    uint8_t lowOffset = 1;
+    uint8_t highOffset = 2;
+    uint8_t code;
+    bufWrite[0] = PCA9685_LED0_ON_L + 0x06;
+    breakup(280, &bufWrite[lowOffset], &bufWrite[highOffset]);
+    printf("StopMotor %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
+    code = metal_i2c_transfer(i2c,PCA9685_I2C_ADDRESS,bufWrite,2,bufRead,1);
+    printf("Stopmotor transfer code %d\n", code);
 }
 
 void driveForward(uint8_t speedFlag){
