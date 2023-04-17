@@ -69,33 +69,39 @@ void breakup(int bigNum, uint8_t* low, uint8_t* high){
 }
 
 void steering(int angle){
-    uint8_t lowOffset = 1;
-    uint8_t highOffset = 2;
+    uint8_t lowOffset = 3;
+    uint8_t highOffset = 4;
     uint8_t code;
     int angleCycle = getServoCycle(angle);
-    bufWrite[0] = PCA9685_LED0_ON_L + 0x02;
+    bufWrite[0] = PCA9685_LED0_ON_L + 0x04;
+    bufWrite[1] = 0x00;
+    bufWrite[2] = 0x00;
     printf("Steering %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
     breakup(angleCycle, &bufWrite[lowOffset], &bufWrite[highOffset]);
-    code = metal_i2c_transfer(i2c,PCA9685_I2C_ADDRESS,bufWrite,2,bufRead,1);
+    code = metal_i2c_transfer(i2c,PCA9685_I2C_ADDRESS,bufWrite,5,bufRead,1);
     printf("Steering transfer code %d\n", code);
 }
 
 void stopMotor(){
-    uint8_t lowOffset = 1;
-    uint8_t highOffset = 2;
+    uint8_t lowOffset = 3;
+    uint8_t highOffset = 4;
     uint8_t code;
-    bufWrite[0] = PCA9685_LED0_ON_L + 0x06;
+    bufWrite[0] = PCA9685_LED0_ON_L;
+    bufWrite[1] = 0x00;
+    bufWrite[2] = 0x00;
     breakup(280, &bufWrite[lowOffset], &bufWrite[highOffset]);
     printf("StopMotor %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
-    code = metal_i2c_transfer(i2c,PCA9685_I2C_ADDRESS,bufWrite,2,bufRead,1);
+    code = metal_i2c_transfer(i2c,PCA9685_I2C_ADDRESS,bufWrite,5,bufRead,1);
     printf("Stopmotor transfer code %d\n", code);
 }
 
 void driveForward(uint8_t speedFlag){
-    uint8_t lowOffset = 1;
-    uint8_t highOffset = 2;
+    uint8_t lowOffset = 3;
+    uint8_t highOffset = 4;
     uint8_t code;
-    bufWrite[0] = PCA9685_LED0_ON_L + 0x06;
+    bufWrite[0] = PCA9685_LED0_ON_L;
+    bufWrite[1] = 0x00;
+    bufWrite[2] = 0x00;
     switch (speedFlag) {
         case 1:
             breakup(313, &bufWrite[lowOffset], &bufWrite[highOffset]);
@@ -111,15 +117,17 @@ void driveForward(uint8_t speedFlag){
             breakup(280, &bufWrite[lowOffset], &bufWrite[highOffset]);
     }
     printf("ForwardMotor %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
-    code = metal_i2c_transfer(i2c,PCA9685_I2C_ADDRESS,bufWrite,2,bufRead,1);
+    code = metal_i2c_transfer(i2c,PCA9685_I2C_ADDRESS,bufWrite,5,bufRead,1);
     printf("ForwardMotor transfer code %d\n", code);
 }
 
 void driveReverse(uint8_t speedFlag){
-    uint8_t lowOffset = 1;
-    uint8_t highOffset = 2;
+    uint8_t lowOffset = 3;
+    uint8_t highOffset = 4;
     uint8_t code;
-    bufWrite[0] = PCA9685_LED0_ON_L + 0x06;
+    bufWrite[0] = PCA9685_LED0_ON_L;
+    bufWrite[1] = 0x00;
+    bufWrite[2] = 0x00;
     switch (speedFlag) {
         case 1:
             breakup(267, &bufWrite[lowOffset], &bufWrite[highOffset]);
@@ -135,7 +143,7 @@ void driveReverse(uint8_t speedFlag){
             breakup(280, &bufWrite[lowOffset], &bufWrite[highOffset]);
     }
     printf("ReverseMotor %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
-    code = metal_i2c_transfer(i2c,PCA9685_I2C_ADDRESS,bufWrite,2,bufRead,1);
+    code = metal_i2c_transfer(i2c,PCA9685_I2C_ADDRESS,bufWrite,5,bufRead,1);
     printf("ReverseMotor transfer code %d\n", code);
 }
 
@@ -161,11 +169,10 @@ int main()
 
 
     */   
-    uint8_t variable1;
-    uint8_t variable2;
-    breakup(2000,&variable1,&variable2);
-    printf("Task 1 variable1: %d variable2: %d\n", variable1, variable2);
-    
+    // uint8_t variable1;
+    // uint8_t variable2;
+    // breakup(2000,&variable1,&variable2);
+    // printf("Task 1 variable1: %d variable2: %d\n", variable1, variable2);    
     //Changing Steering Heading
     /*
         Task 2: using getServoCycle(), bufWrite, bufRead, 
@@ -182,14 +189,14 @@ int main()
         
         note: the motor's speed controller is either 
         LED0 or LED1 depending on where its plugged into 
-        the board. If its LED1, simply add 4 to the LED0
+        the board. If its ~~~~~~~~~    LED1, simply add 4 to the LED0
         address
 
         ex: steering(0); -> driving angle forward
     */
-    printf("Task 2");
-    steering(0);
-    delay(1000);
+    // printf("Task 2");
+    // steering(0);
+    // delay(1000);
     
 
     //Motor config/stop. This will cause a second beep upon completion
@@ -209,9 +216,9 @@ int main()
 
         ex: stopMotor();
     */
-    printf("Task 3");
-    stopMotor();
-    delay(2000);
+    // printf("Task 3");
+    // stopMotor();
+    // delay(2000);
 
 
     /*
@@ -249,14 +256,14 @@ int main()
 
         ex: driveForward(1);
     */
-    printf("Task 4")
-    driveForward(1);
-    delay(1000);
-    driveForward(2);
-    delay(1000);
-    driveForward(3);
-    delay(1000);
-    stopMotor();
+    // printf("Task 4");
+    // driveForward(1);
+    // delay(1000);
+    // driveForward(2);
+    // delay(1000);
+    // driveForward(3);
+    // delay(1000);
+    // stopMotor();
     
     //Motor Reverse
     /*
@@ -277,14 +284,14 @@ int main()
         ex: driveReverse(1);
     */
 
-    printf("Task 5");
-    driveReverse(1);
-    delay(1000);
-    driveReverse(2);
-    delay(1000);
-    driveReverse(3);
-    delay(1000);
-    stopMotor();
+    // printf("Task 5");
+    // driveReverse(1);
+    // delay(1000);
+    // driveReverse(2);
+    // delay(1000);
+    // driveReverse(3);
+    // delay(1000);
+    // stopMotor();
     
     //Fully Controlling the PCA9685
     /*
@@ -303,33 +310,33 @@ int main()
 
     printf("Task 6");
 
-    // Configure the motors (wait for 2 seconds)
+    // // Configure the motors (wait for 2 seconds)
     stopMotor();
     delay(2000);
 
-    // Set the steering heading to 0 degrees
+    // // Set the steering heading to 0 degrees
     steering(0);
 
-    // Drive forward (wait for 2 seconds)
+    // // Drive forward (wait for 2 seconds)
     driveForward(1);
     delay(2000);
 
-    // Change the steering heading to 20 degrees (wait for 2 seconds)
+    // // Change the steering heading to 20 degrees (wait for 2 seconds)
     steering(20);
     delay(2000);
 
-    // Stop the motor (wait for 2 seconds)
+    // // Stop the motor (wait for 2 seconds)
     stopMotor(1);
     delay(2000);
 
-    // Drive forward (wait for 2 seconds)
-    driveForward(1);
+    // // Drive forward (wait for 2 seconds)
+    driveReverse(1);
     delay(2000);
 
-    // Set steering heading to 0 degrees (wait for 2 seconds)
+    // // Set steering heading to 0 degrees (wait for 2 seconds)
     steering(0);
     delay(2000);
 
-    // Stop the motor
+    // // Stop the motor
     stopMotor(1);
 }
