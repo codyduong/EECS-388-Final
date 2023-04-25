@@ -76,10 +76,10 @@ void steering(int angle)
     bufWrite[0] = PCA9685_LED0_ON_L + 0x04;
     bufWrite[1] = 0x00;
     bufWrite[2] = 0x00;
-    // printf("Steering %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
+    printf("Steering %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
     breakup(angleCycle, &bufWrite[lowOffset], &bufWrite[highOffset]);
     code = metal_i2c_transfer(i2c, PCA9685_I2C_ADDRESS, bufWrite, 5, bufRead, 1);
-    // printf("Steering transfer code %d\n", code);
+    printf("Steering transfer code %d\n", code);
 }
 
 void stopMotor()
@@ -91,9 +91,9 @@ void stopMotor()
     bufWrite[1] = 0x00;
     bufWrite[2] = 0x00;
     breakup(280, &bufWrite[lowOffset], &bufWrite[highOffset]);
-    // printf("StopMotor %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
+    printf("StopMotor %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
     code = metal_i2c_transfer(i2c, PCA9685_I2C_ADDRESS, bufWrite, 5, bufRead, 1);
-    // printf("Stopmotor transfer code %d\n", code);
+    printf("Stopmotor transfer code %d\n", code);
 }
 
 void driveForward(uint8_t speedFlag)
@@ -119,9 +119,9 @@ void driveForward(uint8_t speedFlag)
         // If invalid, just stop the motor
         breakup(280, &bufWrite[lowOffset], &bufWrite[highOffset]);
     }
-    // printf("ForwardMotor %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
+    printf("ForwardMotor %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
     code = metal_i2c_transfer(i2c, PCA9685_I2C_ADDRESS, bufWrite, 5, bufRead, 1);
-    // printf("ForwardMotor transfer code %d\n", code);
+    printf("ForwardMotor transfer code %d\n", code);
 }
 
 void driveReverse(uint8_t speedFlag)
@@ -147,9 +147,9 @@ void driveReverse(uint8_t speedFlag)
         // If invalid, just stop the motor
         breakup(280, &bufWrite[lowOffset], &bufWrite[highOffset]);
     }
-    // printf("ReverseMotor %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
+    printf("ReverseMotor %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
     code = metal_i2c_transfer(i2c, PCA9685_I2C_ADDRESS, bufWrite, 5, bufRead, 1);
-    // printf("ReverseMotor transfer code %d\n", code);
+    printf("ReverseMotor transfer code %d\n", code);
 }
 
 int parseCommand(char *str)
@@ -228,6 +228,29 @@ int parseCommand(char *str)
     }
 }
 
+int ser_readcommand(int devid, int n, char *str)
+{
+    int i = 0;
+    for (i = 0; i < n; i++)
+    {
+#if 0     
+    if (!ser_isready(devid)) {// non-blocking io
+      str[i] = 0;
+      return i;
+    }
+#endif
+        str[i] = ser_read(devid);
+        ser_write(0, str[i]);
+        if (str[i] == '\r' || str[i] == '\n' || str[i] == ';')
+        {
+            str[i] = 0;
+            return i;
+        }
+    }
+    str[i - 1] = 0;
+    return i;
+}
+
 int main()
 {
     set_up_I2C();
@@ -236,7 +259,7 @@ int main()
     delay(2000);
 
     char buffer[64] = {'\0'};
-    int bufferint = 0;
+    int bufferint = -1;
     // initialize UART channels
     ser_setup(0); // uart0 (debug)
     ser_setup(1); // uart1 (raspberry pi)
@@ -246,30 +269,13 @@ int main()
     {
         if (ser_isready(1))
         {
-            buffer[bufferint] = ser_read(1);
-            ser_write(0, buffer[bufferint]);
-            if (buffer[bufferint] == '\r' || buffer[bufferint] == '\n')
-            {
+            bufferint = ser_readcommand(1, 64, buffer);
+            if (bufferint > 0) {
+                if (buffer[bufferint] == ';') {
+                    parseCommand(buffer);
+                }
                 bufferint = -1;
-                buffer[0] = '\0';
             }
-            else if (buffer[bufferint] == ';')
-            {
-                // If we encounter the end of the command, go ahead
-                // parse the command then
-                // reset the bufferint and buffer,
-                parseCommand(buffer);
-                bufferint = -1;
-                buffer[0] = '\0';
-            }
-            // somehow we ended up using all the buffer before a valid command
-            else if (bufferint >= 63)
-            {
-                // overflow back to start
-                bufferint = -1;
-                buffer[0] = '\0';
-            }
-            bufferint += 1;
         }
     }
     return 0;
