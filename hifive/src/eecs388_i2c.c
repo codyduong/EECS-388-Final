@@ -76,10 +76,10 @@ void steering(int angle)
     bufWrite[0] = PCA9685_LED0_ON_L + 0x04;
     bufWrite[1] = 0x00;
     bufWrite[2] = 0x00;
-    printf("Steering %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
+    // printf("Steering %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
     breakup(angleCycle, &bufWrite[lowOffset], &bufWrite[highOffset]);
-    // code = metal_i2c_transfer(i2c, PCA9685_I2C_ADDRESS, bufWrite, 5, bufRead, 1);
-    printf("Steering transfer code %d\n", code);
+    code = metal_i2c_transfer(i2c, PCA9685_I2C_ADDRESS, bufWrite, 5, bufRead, 1);
+    // printf("Steering transfer code %d\n", code);
 }
 
 void stopMotor()
@@ -91,9 +91,9 @@ void stopMotor()
     bufWrite[1] = 0x00;
     bufWrite[2] = 0x00;
     breakup(280, &bufWrite[lowOffset], &bufWrite[highOffset]);
-    printf("StopMotor %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
-    // code = metal_i2c_transfer(i2c, PCA9685_I2C_ADDRESS, bufWrite, 5, bufRead, 1);
-    printf("Stopmotor transfer code %d\n", code);
+    // printf("StopMotor %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
+    code = metal_i2c_transfer(i2c, PCA9685_I2C_ADDRESS, bufWrite, 5, bufRead, 1);
+    // printf("Stopmotor transfer code %d\n", code);
 }
 
 void driveForward(uint8_t speedFlag)
@@ -119,9 +119,9 @@ void driveForward(uint8_t speedFlag)
         // If invalid, just stop the motor
         breakup(280, &bufWrite[lowOffset], &bufWrite[highOffset]);
     }
-    printf("ForwardMotor %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
-    // code = metal_i2c_transfer(i2c, PCA9685_I2C_ADDRESS, bufWrite, 5, bufRead, 1);
-    printf("ForwardMotor transfer code %d\n", code);
+    // printf("ForwardMotor %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
+    code = metal_i2c_transfer(i2c, PCA9685_I2C_ADDRESS, bufWrite, 5, bufRead, 1);
+    // printf("ForwardMotor transfer code %d\n", code);
 }
 
 void driveReverse(uint8_t speedFlag)
@@ -147,9 +147,9 @@ void driveReverse(uint8_t speedFlag)
         // If invalid, just stop the motor
         breakup(280, &bufWrite[lowOffset], &bufWrite[highOffset]);
     }
-    printf("ReverseMotor %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
-    // code = metal_i2c_transfer(i2c, PCA9685_I2C_ADDRESS, bufWrite, 5, bufRead, 1);
-    printf("ReverseMotor transfer code %d\n", code);
+    // printf("ReverseMotor %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
+    code = metal_i2c_transfer(i2c, PCA9685_I2C_ADDRESS, bufWrite, 5, bufRead, 1);
+    // printf("ReverseMotor transfer code %d\n", code);
 }
 
 int parseCommand(char *str)
@@ -242,8 +242,6 @@ int main()
     ser_setup(1); // uart1 (raspberry pi)
     printf("Serial connection completed.\n");
     printf("Begin the main loop.\n");
-    char test[] = "a:100;";
-    parseCommand(test);
     while (1)
     {
         if (ser_isready(1))
@@ -269,6 +267,7 @@ int main()
             {
                 // overflow back to start
                 bufferint = -1;
+                buffer[0] = '\0';
             }
             bufferint += 1;
         }
