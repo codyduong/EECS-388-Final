@@ -11,6 +11,6 @@ with open("commands.csv", newline="") as csvfile:
         # angle, speed, duration
         command = f"a:{row[0]};s:{row[1]};d{row[2]}"
         ser1.write(command.encode())
-        time.sleep(float(row[3]))
+        time.sleep(float(row[2]))
 
 ser1.close()
