@@ -1,0 +1,4 @@
+h
+loadfile .pio/build/hifive1-revb/firmware.hex
+r
+q
