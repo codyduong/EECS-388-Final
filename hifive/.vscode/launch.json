@@ -1,0 +1,47 @@
+// AUTOMATICALLY GENERATED FILE. PLEASE DO NOT MODIFY IT MANUALLY
+//
+// PIO Unified Debugger
+//
+// Documentation: https://docs.platformio.org/page/plus/debugging.html
+// Configuration: https://docs.platformio.org/page/projectconf/section_env_debug.html
+
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "platformio-debug",
+            "request": "launch",
+            "name": "PIO Debug",
+            "executable": "/home/c766d913/EECS-388-Final/hifive/.pio/build/hifive1-revb/firmware.elf",
+            "projectEnvName": "hifive1-revb",
+            "toolchainBinDir": "/home/c766d913/.platformio/packages/toolchain-riscv/bin",
+            "internalConsoleOptions": "openOnSessionStart",
+            "svdPath": "/home/c766d913/.platformio/platforms/sifive/misc/svd/FE310.svd",
+            "preLaunchTask": {
+                "type": "PlatformIO",
+                "task": "Pre-Debug"
+            }
+        },
+        {
+            "type": "platformio-debug",
+            "request": "launch",
+            "name": "PIO Debug (skip Pre-Debug)",
+            "executable": "/home/c766d913/EECS-388-Final/hifive/.pio/build/hifive1-revb/firmware.elf",
+            "projectEnvName": "hifive1-revb",
+            "toolchainBinDir": "/home/c766d913/.platformio/packages/toolchain-riscv/bin",
+            "internalConsoleOptions": "openOnSessionStart",
+            "svdPath": "/home/c766d913/.platformio/platforms/sifive/misc/svd/FE310.svd"
+        },
+        {
+            "type": "platformio-debug",
+            "request": "launch",
+            "name": "PIO Debug (without uploading)",
+            "executable": "/home/c766d913/EECS-388-Final/hifive/.pio/build/hifive1-revb/firmware.elf",
+            "projectEnvName": "hifive1-revb",
+            "toolchainBinDir": "/home/c766d913/.platformio/packages/toolchain-riscv/bin",
+            "internalConsoleOptions": "openOnSessionStart",
+            "svdPath": "/home/c766d913/.platformio/platforms/sifive/misc/svd/FE310.svd",
+            "loadMode": "manual"
+        }
+    ]
+}

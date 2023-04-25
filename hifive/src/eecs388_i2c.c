@@ -235,31 +235,40 @@ int main()
     stopMotor();
     delay(2000);
 
-    char charbytes[2] = {'\0'};
-    char buffer[100] = {'\0'};
-    int bufferInt = 0;
+    char buffer[64] = {'\0'};
+    int bufferint = 0;
     // initialize UART channels
     ser_setup(0); // uart0 (debug)
     ser_setup(1); // uart1 (raspberry pi)
     printf("Serial connection completed.\n");
     printf("Begin the main loop.\n");
+    char test[] = "a:100;";
+    parseCommand(test);
     while (1)
     {
         if (ser_isready(1))
         {
-            ser_readline(1, 1, charbytes);
-            ser_printline(0, charbytes);
-            // Add to buffer
-            buffer[bufferInt] = charbytes[0];
-            bufferInt += 1;
-            
-            // Everytime we encounter a ';', parse the command so far, then clear out the buffer
-            if (charbytes[0] == ';') {
-                parseCommand(buffer);
+            buffer[bufferint] = ser_read(1);
+            ser_write(0, buffer[bufferint]);
+            if (buffer[bufferint] == '\r' || buffer[bufferint] == '\n')
+            {
+                bufferint = -1;
                 buffer[0] = '\0';
-                bufferInt = 0;
             }
-            charbytes[0] = '\0';
+            if (buffer[bufferint] == ';') {
+                // If we encounter the end of the command, go ahead 
+                // parse the command then
+                // reset the bufferint and buffer,
+                parseCommand(buffer);
+                bufferint = -1;
+                buffer[0] = '\0';
+            }
+            // somehow we ended up using all the buffer before a valid command
+            if (bufferint >= 63) {
+                // overflow back to start
+                bufferint = -1;
+            }
+            bufferint += 1;
         }
     }
     return 0;

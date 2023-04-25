@@ -1,0 +1,48 @@
+//
+// !!! WARNING !!! AUTO-GENERATED FILE!
+// PLEASE DO NOT MODIFY IT AND USE "platformio.ini":
+// https://docs.platformio.org/page/projectconf/section_env_build.html#build-flags
+//
+{
+    "configurations": [
+        {
+            "name": "PlatformIO",
+            "includePath": [
+                "/home/c766d913/EECS-388-Final/hifive/include",
+                "/home/c766d913/EECS-388-Final/hifive/src",
+                "/home/c766d913/EECS-388-Final/hifive/.pio/build/hifive1-revb",
+                "/home/c766d913/.platformio/packages/framework-freedom-e-sdk/freedom-metal",
+                ""
+            ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "path": [
+                    "/home/c766d913/EECS-388-Final/hifive/include",
+                    "/home/c766d913/EECS-388-Final/hifive/src",
+                    "/home/c766d913/EECS-388-Final/hifive/.pio/build/hifive1-revb",
+                    "/home/c766d913/.platformio/packages/framework-freedom-e-sdk/freedom-metal",
+                    ""
+                ]
+            },
+            "defines": [
+                "PLATFORMIO=60106",
+                "PACKAGE_NAME=\"freedom-metal\"",
+                "PACKAGE_TARNAME=\"freedom-metal\"",
+                "PACKAGE_VERSION=\"v0.1.2\"",
+                "PACKAGE_STRING=\"freedom-metal v0.1.2\"",
+                "PACKAGE=\"freedom-metal\"",
+                "VERSION=\"v0.1.2\"",
+                "MTIME_RATE_HZ_DEF=32768",
+                ""
+            ],
+            "compilerPath": "/home/c766d913/.platformio/packages/toolchain-riscv/bin/riscv64-unknown-elf-gcc",
+            "compilerArgs": [
+                "-march=rv32imac",
+                "-mabi=ilp32",
+                "-mcmodel=medlow",
+                ""
+            ]
+        }
+    ],
+    "version": 4
+}
