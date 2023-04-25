@@ -157,7 +157,7 @@ int parseCommand(char *str)
     // Run through the string array
 
     int parsingType = 0;
-    char commandType = '';
+    char commandType = '\0';
     char commandValueStr[2] = {'\0'};
     int commandValueStrInt = 0;
     int commandValue = 0;
@@ -183,11 +183,11 @@ int parseCommand(char *str)
                 // speed
                 if (commandValue > 0)
                 {
-                    driveForward(commandValue)
+                    driveForward(commandValue);
                 }
                 else if (commandValue < 0)
                 {
-                    driveReverse(commandValue)
+                    driveReverse(commandValue);
                 }
                 else
                 {
@@ -202,8 +202,8 @@ int parseCommand(char *str)
             }
 
             parsingType = 0;
-            commandType = '';
-            commandValueStr = {'\0'};
+            commandType = '\0';
+            commandValueStr[0] = '\0';
             commandValueStrInt = 0;
         }
         else if (str[i] == ':')
@@ -213,17 +213,17 @@ int parseCommand(char *str)
         // Getting commandValue
         else if (parsingType == 1)
         {
-            commandValueStr[commandValueStrInt] = str[i]
+            commandValueStr[commandValueStrInt] = str[i];
             commandValueStrInt += 1;
         }
         // Getting commandType
         else if (parsingType == 0)
         {
-            commandType = str[i]
+            commandType = str[i];
         }
         else
         {
-            printf('We ended up in an invalid state! What happened?')
+            printf('We ended up in an invalid state! What happened?');
         }
     }
 }
@@ -256,7 +256,7 @@ int main()
             // Everytime we encounter a ';', parse the command so far, then clear out the buffer
             if (charbytes[0] == ';') {
                 parseCommand(buffer);
-                buffer = {'\0'};
+                buffer[0] = '\0';
                 bufferInt = 0;
             }
             charbytes[0] = '\0';
