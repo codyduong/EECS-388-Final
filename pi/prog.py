@@ -1,5 +1,5 @@
 import serial
-# import time
+import time
 import csv
 
 ser1 = serial.Serial("/dev/ttyAMA1", 115200)
@@ -9,8 +9,9 @@ with open("commands.csv", newline="") as csvfile:
     for row in reader:
         print(row)
         # angle, speed, duration
-        command = f"\na:{row[0]};s:{row[1]};d:{row[2]};\n"
+        # command = f"a:{row[0]};s:{row[1]};d:{row[2]};"
+        command = f"a:{row[0]};s:{row[1]};"
         ser1.write(command.encode())
-        # time.sleep(float(row[2]))
+        time.sleep(float(row[2]))
 
 ser1.close()
