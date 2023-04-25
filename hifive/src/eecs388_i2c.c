@@ -78,7 +78,7 @@ void steering(int angle)
     bufWrite[2] = 0x00;
     printf("Steering %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
     breakup(angleCycle, &bufWrite[lowOffset], &bufWrite[highOffset]);
-    code = metal_i2c_transfer(i2c, PCA9685_I2C_ADDRESS, bufWrite, 5, bufRead, 1);
+    // code = metal_i2c_transfer(i2c, PCA9685_I2C_ADDRESS, bufWrite, 5, bufRead, 1);
     printf("Steering transfer code %d\n", code);
 }
 
@@ -92,7 +92,7 @@ void stopMotor()
     bufWrite[2] = 0x00;
     breakup(280, &bufWrite[lowOffset], &bufWrite[highOffset]);
     printf("StopMotor %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
-    code = metal_i2c_transfer(i2c, PCA9685_I2C_ADDRESS, bufWrite, 5, bufRead, 1);
+    // code = metal_i2c_transfer(i2c, PCA9685_I2C_ADDRESS, bufWrite, 5, bufRead, 1);
     printf("Stopmotor transfer code %d\n", code);
 }
 
@@ -120,7 +120,7 @@ void driveForward(uint8_t speedFlag)
         breakup(280, &bufWrite[lowOffset], &bufWrite[highOffset]);
     }
     printf("ForwardMotor %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
-    code = metal_i2c_transfer(i2c, PCA9685_I2C_ADDRESS, bufWrite, 5, bufRead, 1);
+    // code = metal_i2c_transfer(i2c, PCA9685_I2C_ADDRESS, bufWrite, 5, bufRead, 1);
     printf("ForwardMotor transfer code %d\n", code);
 }
 
@@ -148,8 +148,84 @@ void driveReverse(uint8_t speedFlag)
         breakup(280, &bufWrite[lowOffset], &bufWrite[highOffset]);
     }
     printf("ReverseMotor %d %d\n", bufWrite[highOffset], bufWrite[lowOffset]);
-    code = metal_i2c_transfer(i2c, PCA9685_I2C_ADDRESS, bufWrite, 5, bufRead, 1);
+    // code = metal_i2c_transfer(i2c, PCA9685_I2C_ADDRESS, bufWrite, 5, bufRead, 1);
     printf("ReverseMotor transfer code %d\n", code);
+}
+
+int parseCommand(char *str)
+{
+    // Run through the string array
+
+    int parsingType = 0;
+    char commandType = '';
+    char commandValueStr[2] = {'\0'};
+    int commandValueStrInt = 0;
+    int commandValue = 0;
+    int i;
+    for (i = 0;; i++)
+    {
+        if (str[i] == '\0')
+        {
+            break;
+        }
+        // If we have terminated the command, go ahead and run it
+        if (str[i] == ';')
+        {
+            // parse commandValueStr
+            commandValue = sscanf(commandValueStr, "%d", &commandValue);
+            switch (commandType)
+            {
+            case 'a':
+                // angle
+                steering(commandValue);
+                break;
+            case 's':
+                // speed
+                if (commandValue > 0)
+                {
+                    driveForward(commandValue)
+                }
+                else if (commandValue < 0)
+                {
+                    driveReverse(commandValue)
+                }
+                else
+                {
+                    stopMotor();
+                }
+                break;
+            case 'd':
+                delay(commandValue * 1000);
+                break;
+            default:
+                printf("Failed to parse command! %c", commandType);
+            }
+
+            parsingType = 0;
+            commandType = '';
+            commandValueStr = {'\0'};
+            commandValueStrInt = 0;
+        }
+        else if (str[i] == ':')
+        {
+            parsingType = 1;
+        }
+        // Getting commandValue
+        else if (parsingType == 1)
+        {
+            commandValueStr[commandValueStrInt] = str[i]
+            commandValueStrInt += 1;
+        }
+        // Getting commandType
+        else if (parsingType == 0)
+        {
+            commandType = str[i]
+        }
+        else
+        {
+            printf('We ended up in an invalid state! What happened?')
+        }
+    }
 }
 
 int main()
@@ -160,10 +236,12 @@ int main()
     delay(2000);
 
     char charbytes[2] = {'\0'};
+    char buffer[100] = {'\0'};
+    int bufferInt = 0;
     // initialize UART channels
     ser_setup(0); // uart0 (debug)
     ser_setup(1); // uart1 (raspberry pi)
-    printf("Setup completed.\n");
+    printf("Serial connection completed.\n");
     printf("Begin the main loop.\n");
     while (1)
     {
@@ -171,6 +249,16 @@ int main()
         {
             ser_readline(1, 1, charbytes);
             ser_printline(0, charbytes);
+            // Add to buffer
+            buffer[bufferInt] = charbytes[0];
+            bufferInt += 1;
+            
+            // Everytime we encounter a ';', parse the command so far, then clear out the buffer
+            if (charbytes[0] == ';') {
+                parseCommand(buffer);
+                buffer = {'\0'};
+                bufferInt = 0;
+            }
             charbytes[0] = '\0';
         }
     }
