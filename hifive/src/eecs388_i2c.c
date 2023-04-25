@@ -255,8 +255,9 @@ int main()
                 bufferint = -1;
                 buffer[0] = '\0';
             }
-            if (buffer[bufferint] == ';') {
-                // If we encounter the end of the command, go ahead 
+            else if (buffer[bufferint] == ';')
+            {
+                // If we encounter the end of the command, go ahead
                 // parse the command then
                 // reset the bufferint and buffer,
                 parseCommand(buffer);
@@ -264,7 +265,8 @@ int main()
                 buffer[0] = '\0';
             }
             // somehow we ended up using all the buffer before a valid command
-            if (bufferint >= 63) {
+            else if (bufferint >= 63)
+            {
                 // overflow back to start
                 bufferint = -1;
             }
