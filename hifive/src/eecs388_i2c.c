@@ -169,7 +169,7 @@ int parseCommand(char *str)
             break;
         }
         // If we have terminated the command, go ahead and run it
-        if (str[i] == ';')
+        if (str[i] == ';' && parsingType == 1)
         {
             // parse commandValueStr
             sscanf(commandValueStr, "%d", &commandValue);
@@ -245,11 +245,12 @@ int main()
     printf("Begin the main loop.\n");
     while (1)
     {
-        if (ser_isready(1))
+        // DEFAULT CODE
+        while (ser_isready(1))
         {
             buffer[bufferint] = ser_read(1);
             ser_write(0, buffer[bufferint]);
-            if (buffer[bufferint] == '\r' || buffer[bufferint] == '\n')
+            if (buffer[bufferint] == '\r' || buffer[bufferint] == '\n' || buffer[bufferint] == '\0')
             {
                 bufferint = -1;
                 buffer[0] = '\0';
@@ -263,14 +264,16 @@ int main()
                 buffer[0] = '\0';
             }
             // somehow we ended up using all the buffer before a valid command
-            // 62 to always ensure 64 is a null terminator
-            else if (bufferint >= 62) {
+            if (bufferint >= 63) {
                 // overflow back to start
                 bufferint = -1;
                 buffer[0] = '\0';
             }
             bufferint += 1;
         }
+
+        // BONUS MILESTONE CODE
+
     }
     return 0;
 }
