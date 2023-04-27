@@ -197,9 +197,9 @@ int parseCommand(char *str)
             case 'd':
                 delay(commandValue * 1000);
                 break;
-            // default:
+            default:
                 // Don't pollute with errors
-                // printf("Failed to parse command! %c\n", commandType);
+                printf("Failed to parse command! %c\n", commandType);
             }
 
             parsingType = 0;
@@ -263,7 +263,8 @@ int main()
                 buffer[0] = '\0';
             }
             // somehow we ended up using all the buffer before a valid command
-            else if (bufferint >= 63) {
+            // 62 to always ensure 64 is a null terminator
+            else if (bufferint >= 62) {
                 // overflow back to start
                 bufferint = -1;
                 buffer[0] = '\0';
