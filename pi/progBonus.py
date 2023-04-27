@@ -18,7 +18,7 @@ def schedule_commands(filename: str, scheduler: sched.scheduler, serial: serial.
         # remove first row
         rows: List[List[str]] = list(csv.reader(csvfile))[1:]
         for index, row in enumerate(rows):
-            scheduler.enterabs(delay, index, send_command, argument=(filename, row, serial))
+            scheduler.enter(delay, index, send_command, argument=(filename, row, serial))
             # add new delay to scheduler
             delay += float(row[3])
 
