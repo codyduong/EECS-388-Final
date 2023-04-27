@@ -20,6 +20,7 @@ def schedule_commands(filename: str, scheduler: sched.scheduler, serial: serial.
         for index, row in enumerate(rows):
             # if the first index, don't delay at all, otherwise use previous delay
             delay: float = float(rows[index - 1][3]) if index > 0 else 0
+            print(f"scheduling {row}")
 
             scheduler.enter(delay, index, send_command, argument=(filename, row, serial))
 
