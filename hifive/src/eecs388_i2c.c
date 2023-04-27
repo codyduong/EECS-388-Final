@@ -307,7 +307,7 @@ int main()
                 }
                 bufferint += 1;
             } else {
-                printf("MISMATCH! Panic!")
+                printf("MISMATCH! Panic!");
                 stopMotor();
             }
         }
