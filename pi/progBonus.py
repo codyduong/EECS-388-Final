@@ -26,7 +26,7 @@ def main(s1: serial.Serial, s2: serial.Serial) -> None:
 
 if __name__ == "__main":
     s1: serial.Serial = serial.Serial("/dev/ttyAMA1", 115200)
-    s2: serial.Serial = serial.Serial("/dev/ttyAMA3", 115200)
+    s2: serial.Serial = serial.Serial("/dev/ttyAMA0", 115200)
     main(s1, s2)
     s1.close()
     s2.close()

@@ -276,14 +276,14 @@ int main()
         // }
 
         // BONUS MILESTONE CODE
-        while (ser_isready(1) && ser_isready(2))
+        while (ser_isready(0) && ser_isready(1))
         {
             // READ IN LOCKSTEP
-            temp = ser_read(1);
-            if (temp && ser_read(2))
+            temp = ser_read(0);
+            if (temp && ser_read(1))
             {
                 buffer[bufferint] = temp;
-                ser_write(0, buffer[bufferint]);
+                // ser_write(0, buffer[bufferint]);
                 if (buffer[bufferint] == '\r' || buffer[bufferint] == '\n' || buffer[bufferint] == '\0')
                 {
                     bufferint = -1;
