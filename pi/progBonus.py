@@ -1,4 +1,5 @@
 # For bonus milestone
+import queue
 import serial
 import time
 import sched
@@ -28,6 +29,7 @@ def main(s1: serial.Serial, s2: serial.Serial) -> None:
     sch: sched.scheduler = sched.scheduler(time.monotonic, time.sleep)
     schedule_commands("Bonus_ML_Data/Data1.csv", sch, s1)
     schedule_commands("Bonus_ML_Data/Data2.csv", sch, s2)
+    print(sch.queue)
     sch.run()
 
 
