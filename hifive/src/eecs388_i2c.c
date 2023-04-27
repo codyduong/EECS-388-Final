@@ -236,13 +236,12 @@ int main()
     stopMotor();
     delay(2000);
 
-    char temp = '\0';
+    char temp[2] = {'\0'};
     char buffer[64] = {'\0'};
     int bufferint = 0;
     // initialize UART channels
     ser_setup(0); // uart0 (debug)
     ser_setup(1); // uart1 (raspberry pi)
-    ser_setup(2); // bonus milestone uart
     printf("Serial connection completed.\n");
     printf("Begin the main loop.\n");
     while (1)
@@ -277,14 +276,14 @@ int main()
         // }
 
         // BONUS MILESTONE CODE
-        if (ser_isready(1) && ser_isready(2))
+        if (ser_isready(1))
         {
             // READ IN LOCKSTEP
-            temp = ser_read(1);
-            if (temp && ser_read(2))
+            temp[0] = ser_read(0);
+            temp[1] = ser_read(1);
+            if (temp[0] == temp[1])
             {
-                buffer[bufferint] = temp;
-                ser_write(0, buffer[bufferint]);
+                buffer[bufferint] = temp[1];
                 if (buffer[bufferint] == '\r' || buffer[bufferint] == '\n' || buffer[bufferint] == '\0')
                 {
                     bufferint = -1;
@@ -312,6 +311,7 @@ int main()
             {
                 printf("MISMATCH! Panic!");
                 stopMotor();
+                break;
             }
         }
     }
