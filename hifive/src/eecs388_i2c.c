@@ -242,77 +242,78 @@ int main()
     // initialize UART channels
     ser_setup(0); // uart0 (debug)
     ser_setup(1); // uart1 (raspberry pi)
+    ser_setup(2); // bonus milestone uart
     printf("Serial connection completed.\n");
     printf("Begin the main loop.\n");
     while (1)
     {
         // DEFAULT CODE
-        if (ser_isready(1))
-        {
-            buffer[bufferint] = ser_read(1);
-            ser_write(0, buffer[bufferint]);
-            if (buffer[bufferint] == '\r' || buffer[bufferint] == '\n')
-            {
-                bufferint = -1;
-                buffer[0] = '\0';
-            }
-            else if (buffer[bufferint] == ';')
-            {
-                // If we encounter the end of the command, go ahead
-                // parse the command then
-                // reset the bufferint and buffer,
-                parseCommand(buffer);
-                bufferint = -1;
-                buffer[0] = '\0';
-            }
-            // somehow we ended up using all the buffer before a valid command
-            else if (bufferint >= 63)
-            {
-                // overflow back to start
-                bufferint = -1;
-                buffer[0] = '\0';
-            }
-            bufferint += 1;
-        }
+        // if (ser_isready(1))
+        // {
+        //     buffer[bufferint] = ser_read(1);
+        //     ser_write(0, buffer[bufferint]);
+        //     if (buffer[bufferint] == '\r' || buffer[bufferint] == '\n')
+        //     {
+        //         bufferint = -1;
+        //         buffer[0] = '\0';
+        //     }
+        //     else if (buffer[bufferint] == ';')
+        //     {
+        //         // If we encounter the end of the command, go ahead
+        //         // parse the command then
+        //         // reset the bufferint and buffer,
+        //         parseCommand(buffer);
+        //         bufferint = -1;
+        //         buffer[0] = '\0';
+        //     }
+        //     // somehow we ended up using all the buffer before a valid command
+        //     else if (bufferint >= 63)
+        //     {
+        //         // overflow back to start
+        //         bufferint = -1;
+        //         buffer[0] = '\0';
+        //     }
+        //     bufferint += 1;
+        // }
 
         // BONUS MILESTONE CODE
-        // if (ser_isready(1) && ser_isready(2))
-        // {
-        //     // READ IN LOCKSTEP
-        //     temp = ser_read(1);
-        //     if (temp && ser_read(2))
-        //     {
-        //         buffer[bufferint] = temp;
-        //         // ser_write(0, buffer[bufferint]);
-        //         if (buffer[bufferint] == '\r' || buffer[bufferint] == '\n' || buffer[bufferint] == '\0')
-        //         {
-        //             bufferint = -1;
-        //             buffer[0] = '\0';
-        //         }
-        //         else if (buffer[bufferint] == ';')
-        //         {
-        //             // If we encounter the end of the command, go ahead
-        //             // parse the command then
-        //             // reset the bufferint and buffer,
-        //             parseCommand(buffer);
-        //             bufferint = -1;
-        //             buffer[0] = '\0';
-        //         }
-        //         // somehow we ended up using all the buffer before a valid command
-        //         if (bufferint >= 63)
-        //         {
-        //             // overflow back to start
-        //             bufferint = -1;
-        //             buffer[0] = '\0';
-        //         }
-        //         bufferint += 1;
-        //     }
-        //     else
-        //     {
-        //         printf("MISMATCH! Panic!");
-        //         stopMotor();
-        //     }
-        // }
+        if (ser_isready(1) && ser_isready(2))
+        {
+            // READ IN LOCKSTEP
+            temp = ser_read(1);
+            if (temp && ser_read(2))
+            {
+                buffer[bufferint] = temp;
+                ser_write(0, buffer[bufferint]);
+                if (buffer[bufferint] == '\r' || buffer[bufferint] == '\n' || buffer[bufferint] == '\0')
+                {
+                    bufferint = -1;
+                    buffer[0] = '\0';
+                }
+                else if (buffer[bufferint] == ';')
+                {
+                    // If we encounter the end of the command, go ahead
+                    // parse the command then
+                    // reset the bufferint and buffer,
+                    parseCommand(buffer);
+                    bufferint = -1;
+                    buffer[0] = '\0';
+                }
+                // somehow we ended up using all the buffer before a valid command
+                if (bufferint >= 63)
+                {
+                    // overflow back to start
+                    bufferint = -1;
+                    buffer[0] = '\0';
+                }
+                bufferint += 1;
+            }
+            else
+            {
+                printf("MISMATCH! Panic!");
+                stopMotor();
+            }
+        }
     }
     return 0;
 }
