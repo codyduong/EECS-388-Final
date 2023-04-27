@@ -247,7 +247,7 @@ int main()
     while (1)
     {
         // DEFAULT CODE
-        // while (ser_isready(1))
+        // if (ser_isready(1))
         // {
         //     buffer[bufferint] = ser_read(1);
         //     ser_write(0, buffer[bufferint]);
