@@ -1,5 +1,4 @@
 # For bonus milestone
-import queue
 import serial
 import time
 import sched
@@ -15,14 +14,13 @@ def send_command(name: str, row: List[str], serial: serial.Serial) -> None:
 
 def schedule_commands(filename: str, scheduler: sched.scheduler, serial: serial.Serial) -> None:
     with open(filename, newline="") as csvfile:
+        delay: float = 0
         # remove first row
         rows: List[List[str]] = list(csv.reader(csvfile))[1:]
         for index, row in enumerate(rows):
-            # if the first index, don't delay at all, otherwise use previous delay
-            delay: float = float(rows[index - 1][3]) if index > 0 else 0
-            print(f"scheduling {row} with delay {delay}")
-
             scheduler.enter(delay, index, send_command, argument=(filename, row, serial))
+            # add new delay to scheduler
+            delay += float(row[3])
 
 
 # Schedule the tasks async so we can run side-by-side and handle different durations correctly.
@@ -30,7 +28,6 @@ def main(s1: serial.Serial, s2: serial.Serial) -> None:
     sch: sched.scheduler = sched.scheduler(time.monotonic, time.sleep)
     schedule_commands("Bonus_ML_Data/Data1.csv", sch, s1)
     schedule_commands("Bonus_ML_Data/Data2.csv", sch, s2)
-    print(sch.queue)
     sch.run()
 
 
