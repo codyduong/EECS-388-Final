@@ -12,6 +12,7 @@
                 "/home/c766d913/EECS-388-Final/hifive/src",
                 "/home/c766d913/EECS-388-Final/hifive/.pio/build/hifive1-revb",
                 "/home/c766d913/.platformio/packages/framework-freedom-e-sdk/freedom-metal",
+                "/home/c766d913/EECS-388-Final/hifive/.pio/libdeps/hifive1-revb/Unity/src",
                 ""
             ],
             "browse": {
@@ -21,6 +22,7 @@
                     "/home/c766d913/EECS-388-Final/hifive/src",
                     "/home/c766d913/EECS-388-Final/hifive/.pio/build/hifive1-revb",
                     "/home/c766d913/.platformio/packages/framework-freedom-e-sdk/freedom-metal",
+                    "/home/c766d913/EECS-388-Final/hifive/.pio/libdeps/hifive1-revb/Unity/src",
                     ""
                 ]
             },
