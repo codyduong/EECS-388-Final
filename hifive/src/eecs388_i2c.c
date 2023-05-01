@@ -249,8 +249,11 @@ int main()
         // DEFAULT CODE
         if (ser_isready(1))
         {
+            // MILESTONE 2
             buffer[bufferint] = ser_read(1);
             ser_write(0, buffer[bufferint]);
+
+            // MILESTONE 3
             if (buffer[bufferint] == '\r' || buffer[bufferint] == '\n')
             {
                 bufferint = -1;
