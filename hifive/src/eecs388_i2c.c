@@ -169,7 +169,7 @@ int parseCommand(char *str)
             break;
         }
         // If we have terminated the command, go ahead and run it
-        if (str[i] == ';')
+        if (str[i] == ';' && parsingType == 1)
         {
             // parse commandValueStr
             sscanf(commandValueStr, "%d", &commandValue);
@@ -187,7 +187,7 @@ int parseCommand(char *str)
                 }
                 else if (commandValue < 0)
                 {
-                    driveReverse(commandValue);
+                    driveReverse(abs(commandValue));
                 }
                 else
                 {
@@ -197,9 +197,9 @@ int parseCommand(char *str)
             case 'd':
                 delay(commandValue * 1000);
                 break;
-            // default:
+            default:
                 // Don't pollute with errors
-                // printf("Failed to parse command! %c\n", commandType);
+                printf("Failed to parse command! %c\n", commandType);
             }
 
             parsingType = 0;
@@ -224,7 +224,7 @@ int parseCommand(char *str)
         }
         else
         {
-            printf('We ended up in an invalid state! What happened?');
+            printf("We ended up in an invalid state! What happened?");
         }
     }
 }
@@ -236,6 +236,7 @@ int main()
     stopMotor();
     delay(2000);
 
+    char temp[2] = {'\0'};
     char buffer[64] = {'\0'};
     int bufferint = 0;
     // initialize UART channels
@@ -245,6 +246,7 @@ int main()
     printf("Begin the main loop.\n");
     while (1)
     {
+        // DEFAULT CODE
         if (ser_isready(1))
         {
             buffer[bufferint] = ser_read(1);
@@ -254,8 +256,9 @@ int main()
                 bufferint = -1;
                 buffer[0] = '\0';
             }
-            else if (buffer[bufferint] == ';') {
-                // If we encounter the end of the command, go ahead 
+            else if (buffer[bufferint] == ';')
+            {
+                // If we encounter the end of the command, go ahead
                 // parse the command then
                 // reset the bufferint and buffer,
                 parseCommand(buffer);
@@ -263,13 +266,54 @@ int main()
                 buffer[0] = '\0';
             }
             // somehow we ended up using all the buffer before a valid command
-            else if (bufferint >= 63) {
+            else if (bufferint >= 63)
+            {
                 // overflow back to start
                 bufferint = -1;
                 buffer[0] = '\0';
             }
             bufferint += 1;
         }
+
+        // BONUS MILESTONE CODE
+        //     if (ser_isready(1) && ser_isready(0))
+        //     {
+        //         // READ IN LOCKSTEP
+        //         temp[0] = ser_read(0);
+        //         temp[1] = ser_read(1);
+        //         if (temp[0] == temp[1])
+        //         {
+        //             buffer[bufferint] = temp[1];
+        //             if (buffer[bufferint] == '\r' || buffer[bufferint] == '\n' || buffer[bufferint] == '\0')
+        //             {
+        //                 bufferint = -1;
+        //                 buffer[0] = '\0';
+        //             }
+        //             else if (buffer[bufferint] == ';')
+        //             {
+        //                 // If we encounter the end of the command, go ahead
+        //                 // parse the command then
+        //                 // reset the bufferint and buffer,
+        //                 parseCommand(buffer);
+        //                 bufferint = -1;
+        //                 buffer[0] = '\0';
+        //             }
+        //             // somehow we ended up using all the buffer before a valid command
+        //             if (bufferint >= 63)
+        //             {
+        //                 // overflow back to start
+        //                 bufferint = -1;
+        //                 buffer[0] = '\0';
+        //             }
+        //             bufferint += 1;
+        //         }
+        //         else
+        //         {
+        //             printf("MISMATCH! Panic!");
+        //             stopMotor();
+        //             break;
+        //         }
+        //     }
     }
     return 0;
 }
